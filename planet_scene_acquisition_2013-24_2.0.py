@@ -1,27 +1,27 @@
 """
 This script is for mass-acquiring PlanetScope scene imagery.
+
 It works in two phases. In the first phase, Planet's Data API is queried to get the IDs of scenes which meet certain criteria.
-In the second phase, theses IDs are passed to Planet's Orders API, they are ordered, and then they are downloaded.
+In the second phase, these IDs are passed to Planet's Orders API, they are ordered, and then they are downloaded.
 Multiple orders are automatically created and placed if you want more than 500 scenes.
 
-Search for the tag TO_EDIT to find places where you may want to modify the script.
+Users must edit this script to make it usable.
+Search for the tag TO_EDIT to find places to make modifications. Some are mandatory (e.g. inputing your API key), others are optional (e.g., filtering scene IDs or selecting pr-processing tools).
 """
-#%% import libraries, set API
+#%% import libraries, setup API and session
 import json
 import os
 import pathlib
 import time
 import pandas as pd
 import requests
-from requests.auth import HTTPBasicAuth
-from planet import Session, DataClient, OrdersClient
 
-#TO_EDIT: input your API key
+#TO_EDIT: input your API key if it is not set an an environment variable
 # if your Planet API Key is not set as an environment variable, you can paste it below
 if os.environ.get('PL_API_KEY', ''):
     API_KEY = os.environ.get('PL_API_KEY', '')
 else:
-    API_KEY = 'PLAK9e79c41de89d4189b6c15ae280dd2c6b'
+    API_KEY = 'INSERT API KEY HERE'
 
 #setup session
 session = requests.Session()
@@ -32,9 +32,12 @@ session.auth = (API_KEY, '')
 
 #%% use Data API to get list of scene IDs for download
 """
+This cell queries the Planet Data API to return scenes which meet provided criteria. The output is a dataframe of scenes and metadata.
+At the very least, you'll want to provide your area of interest as well as the date range to search for images. You may also want to filter out cloud-covered scenes.
+
 Reference https://docs.planet.com/develop/apis/data/item-search/#andfilter
 """
-#URL for querying data API
+#URL for querying Data API
 data_url = 'https://api.planet.com/data/v1'
 
 #URL for returning search results from data API query
@@ -44,6 +47,7 @@ quick_search_url = '{}/quick-search'.format(data_url)
 def p(data):
     print(json.dumps(data, indent=2))
 
+#TO_EDIT: the range of dates you want imagery for
 #date filter
 start_date = '2013-01-01'
 end_date = '2024-12-31'
@@ -57,8 +61,9 @@ date_filter = {
     }
 }
 
+#TO_EDIT: provide the coordinates defining your area of interest. Polygons or points are acceptable.
 #Geometry filter
-Quesnel_bbox = {'type': 'Polygon',
+aoi_geojson = {'type': 'Polygon',
  'coordinates': [[[-122.78314758004296, 53.33052904360998],
    [-122.70020261459693, 53.3282536221804],
    [-122.69657565349696, 53.37451376544108],
@@ -68,11 +73,11 @@ Quesnel_bbox = {'type': 'Polygon',
 geometry_filter = {
     'type': 'GeometryFilter',
     'field_name': 'geometry',
-    'relation': 'intersects',
-    'config': Quesnel_bbox
+    'relation': 'intersects', #look for scenes which intersect the area of interest
+    'config': aoi_geojson
 }
 
-
+# Use instrument filter to specify what generations of satellite you want imagery from
 # instrument_filter = {
 #     'type': 'StringInFilter',
 #     'field_name': 'instrument',
@@ -102,34 +107,7 @@ quality_filter = {
     'config': ['standard'] #only standard quality
 }
 
-#asset filter (so that I'm only getting scenes where surface reflectance and udm2 assets are available)
-# asset_filter = {
-#   "type": "AndFilter",
-#   "config": [
-#     {
-#       "type": "AssetFilter",
-#       "config": ["analytic_sr"]
-#     },
-#     {
-#       "type": "AssetFilter",
-#       "config": ["udm2"]
-#     }
-#   ]
-# }
-
-# asset_filter = {
-#   "type": "AndFilter",
-#   "config": [
-#     {
-#       "type": "AssetFilter",
-#       "config": ["ortho_analytic_4b_sr"]
-#     },
-#     {
-#       "type": "AssetFilter",
-#       "config": ["udm2"]
-#     }
-#   ]
-# }
+#asset filter (to only get scenes where surface reflectance and udm2 assets are available)
 
 asset_filter = {
   "type": "AndFilter",
@@ -138,11 +116,6 @@ asset_filter = {
       "type": "AssetFilter",
       "config": ["analytic_sr"]      # analytic SR asset
     }
-    # ,
-    # {
-    #   "type": "AssetFilter",
-    #   "config": ["ortho_udm2"]       # UDM2 asset for PSScene
-    # }
   ]
 }
 
@@ -186,7 +159,7 @@ data_response = session.post(quick_search_url, json=data_request)
 #assign response to a variable
 data_response_geojson = data_response.json()
 
-#paginate through response to aggregate all results
+#paginate through response to aggregate all results (since results get returned in chunks of 250 per page)
 links = data_response_geojson['_links']
 feats = data_response_geojson['features']
 
@@ -200,14 +173,19 @@ while next_link:
     all_features.extend(next_feats)
     next_link = next_response_geojson['_links'].get('_next', None)
 
-#TO_EDIT: do additional filtering using dataframe if desired (just make sure that the final dataframe is called all_features_df)
+#TO_EDIT: do additional filtering using dataframe if desired (just make sure that the final dataframe to be passed on is called all_features_df)
 #put all results in a dataframe
 all_features_df = pd.DataFrame([feat['properties'] for feat in all_features])
 all_features_df['id'] = [feat['id'] for feat in all_features]
 
 
-# %% set up to place order
-
+# %% Set up to place order
+"""
+This step takes the scene ids from the last phase and orders them. The maximum number of scenes that can be ordered for local delivery at one time is
+500. This script will automatically break the list of ids into groups of 500 and place separate orders for each group.
+You will want to specify your order name, output directory for downloading imagery, and "product bundle" (i.e., do you want 4band or 8band imagery, 
+and do you also want the udm2 assets?). You may also want to add pre-processing to the imagery, such as clipping to the AOI, harmonization with Sentinel-2, or coregistration.
+"""
 #extract ids of scenes to order from features dataframe
 desired_feat_ids = all_features_df['id'].tolist()
 
@@ -379,5 +357,6 @@ for order_url in order_urls_list:
 
     #download results
     download_results(results, download_dir=download_dir)
+
 
 
