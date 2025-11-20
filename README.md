@@ -1,5 +1,7 @@
 # planet-tools
 A set of scripts and tools for acquiring and processing data from PlanetScope CubeSats.
+See [Shields et al. (2025)](https://www.sciencedirect.com/science/article/pii/S2666017225001208) for an overview of PlanetScope data and pre-processing methods.
+
 
 Other resources:
 - [PlanetLabs github](https://github.com/planetlabs/notebooks/tree/master/jupyter-notebooks)
