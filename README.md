@@ -5,6 +5,11 @@ A set of scripts and tools for acquiring and processing data from PlanetScope Cu
 
 Script for finding and downloading large volumes of Planet data using Planet's Data and Orders APIs. Users will need to copy and edit this script to use it (e.g., by inserting their own API key, defining their area of interest, defining the time range for the data, and choosing other filters or pre-processing tools as necessary). For small amounts of data, it may be more practical to use Planet Explorer, or the Planet plugins for QGIS and ArcGIS. To learn more about using Planet's APIs, check out Planet's github rep (linked below).
 
+**helper_functions.R**
+
+A set of functions implemented in R which make it easier to use and pre-process PlanetScope data. Can be loaded with 
+`source('https://raw.githubusercontent.com/Spencer-Shields/planet-tools/refs/heads/main/helper_functions.R')`
+
 
 ## Other resources
 Have a look at [Shields et al. (2025)](https://www.sciencedirect.com/science/article/pii/S2666017225001208) for an overview of PlanetScope data and pre-processing methods.
