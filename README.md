@@ -1,8 +1,9 @@
 # planet-tools
 A set of scripts and tools for acquiring and processing data from PlanetScope CubeSats.
 
-See [Shields et al. (2025)](https://www.sciencedirect.com/science/article/pii/S2666017225001208) for an overview of PlanetScope data and pre-processing methods.
 
+## Other resources
+Have a look at [Shields et al. (2025)](https://www.sciencedirect.com/science/article/pii/S2666017225001208) for an overview of PlanetScope data and pre-processing methods.
 
 Other resources:
 - [PlanetLabs github](https://github.com/planetlabs/notebooks/tree/master/jupyter-notebooks)
@@ -24,4 +25,6 @@ Other resources:
 
   Matlab implementation of the workflow by [Wang et al. (2022)](https://www.sciencedirect.com/science/article/abs/pii/S0034425722002504?via%3Dihub) for filling gaps in PlanetScope time series.
 
-  
+
+## To access Planet data
+Planet offers licenses to access its data for free for non-commercial use. If you are a student or faculty member at the University of British Columbia, then fill out [this](https://researchcommons.library.ubc.ca/planet-imagery/) form to gain access and log on to [planet.com](https://www.planet.com/) to search for data or find your API key.
