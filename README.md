@@ -5,7 +5,7 @@ A set of scripts and tools for acquiring and processing data from PlanetScope Cu
 
 - **planet_scenes_acquisition.py**
 
-  Script for finding and downloading large volumes of Planet data using Planet's Data and Orders APIs. Users will need to copy and edit this script to use it (e.g., by inserting their own API key, defining their area of interest, defining the time range for the data, and choosing other filters or pre-processing tools as necessary). For small amounts of data, it may be more practical to use Planet Explorer, or the Planet plugins for QGIS and ArcGIS. To learn more about using Planet's APIs, check out Planet's github rep (linked below).
+  Script for finding and downloading large volumes of Planet data using Planet's Data and Orders APIs. Users will need to copy and edit this script to use it (e.g., by inserting their own API key, defining their area of interest, defining the time range for the data, and choosing other filters or pre-processing tools as necessary). For small amounts of data, it may be more practical to use Planet Explorer, or the Planet plugins for QGIS and ArcGIS. To learn more about using Planet's APIs, check out Planet's github repo (linked below).
 
 - **helper_functions.R**
 
