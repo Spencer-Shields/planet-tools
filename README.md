@@ -1,21 +1,24 @@
 # planet-tools
 A set of scripts and tools for acquiring and processing data from PlanetScope CubeSats.
 
+**planet_scenes_acquisition.py**
+
+Script for finding and downloading large volumes of Planet data using Planet's Data and Orders APIs. Users will need to copy and edit this script to use it (e.g., by inserting their own API key, defining their area of interest, defining the time range for the data, and choosing other filters or pre-processing tools as necessary). For small amounts of data, it may be more practical to use Planet Explorer, or the Planet plugins for QGIS and ArcGIS. To learn more about using Planet's APIs, check out the Jupyter notebooks linked below.
+
 
 ## Other resources
 Have a look at [Shields et al. (2025)](https://www.sciencedirect.com/science/article/pii/S2666017225001208) for an overview of PlanetScope data and pre-processing methods.
 
-Other resources:
 - [PlanetLabs github](https://github.com/planetlabs/notebooks/tree/master/jupyter-notebooks)
   
-  Planet's own tutorials for using its APIs to find, process, and acquire data
+  Planet's own tutorials for using its APIs to find, process, and acquire data. Walkthrough videos for the different notebooks can be found at [Planet University](https://university.planet.com/).
 - [Time Series normalization](https://github.com/latmperkmol/ts-norm/tree/master)
 
-  Python implementation of the workflow by [Leach et al. (2019)](https://www.sciencedirect.com/science/article/pii/S0168169919301243) (ex IRSS member) for normalizing time series of PlanetScope data
+  Python implementation of the workflow by [Leach et al. (2019)](https://www.sciencedirect.com/science/article/pii/S0168169919301243) (ex IRSS member) for normalizing time series of PlanetScope data.
 
 - [Normalization for mosaics](https://github.com/swegmueller)
 
-  Python implementation of the workflows by [Wegmueller et al. (2021)](https://www.sciencedirect.com/science/article/pii/S0303243420309338) to normalize adjacent PlanetScope scenes for mosaicing
+  Python implementation of the workflows by [Wegmueller et al. (2021)](https://www.sciencedirect.com/science/article/pii/S0303243420309338) to normalize adjacent PlanetScope scenes for mosaicing.
 
 - [Cloud and shadow masking](https://github.com/Global-ecology-and-remote-sensing/PlanetScope-cloud-detection)
 
