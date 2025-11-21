@@ -9,7 +9,8 @@ Script for finding and downloading large volumes of Planet data using Planet's D
 
 **helper_functions.R**
 
-A set of functions implemented in R which make it easier to use and pre-process PlanetScope data. Can be loaded with 
+A set of functions implemented in R which make it easier to use and pre-process PlanetScope data. Can be loaded with
+
 `source('https://raw.githubusercontent.com/Spencer-Shields/planet-tools/refs/heads/main/helper_functions.R')`
 
 
