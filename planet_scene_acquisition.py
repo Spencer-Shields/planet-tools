@@ -305,14 +305,23 @@ for i in range(len(desired_feat_chunks)):
                 "archive_type": "zip",
                 "single_archive": True
             },
-            "tools": [ #TO_EDIT: add preprocessing tools such as clipping, harmonization, coregistration, band math, etc
-        {
-            "clip": {
-                "aoi": Quesnel_bbox  # must be valid Polygon or MultiPolygon GeoJSON
-            }
+            "tools": [ #TO_EDIT: add preprocessing tools
+                {
+                    "clip": {
+                        "aoi": Quesnel_bbox  #clip to polygon or multipolygon geojson
+                            },
+                {
+                    "coregister": { #coregister all images to reference item
+                        "anchor_item": "20210726_191611_86_2307"
+                                }
+                          },
+              {
+                    "harmonize": { #radiometric harmonization with Sentinel-2
+                          "target_sensor": "Sentinel-2"
+                                }
+                          }
+            ]
         }
-    ]
-}
 
         #place order
         order_response = requests.post(
@@ -357,6 +366,7 @@ for order_url in order_urls_list:
 
     #download results
     download_results(results, download_dir=download_dir)
+
 
 
 
